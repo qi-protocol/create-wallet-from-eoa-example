@@ -1,0 +1,21 @@
+node_modules
+.env
+coverage
+coverage.json
+yarn-error.log
+
+#Foundry files
+out
+forge-cache
+
+#Deployment folder
+deployments/
+broadcast/
+local.json
+
+#oz-defender files
+dist/
+
+
+lib/
+.secret

@@ -1,0 +1,45 @@
+{
+	"name": "create-wallet",
+	"version": "0.1.0",
+	"description": "Simple Deployment Test",
+	"main": "index.js",
+	"repository": "TBA",
+	"author": "Charles Taylor",
+	"license": "GPL-3.0-or-later",
+	"private": true,
+	"devDependencies": {
+		"@nomicfoundation/hardhat-foundry": "^1.0.0",
+		"@typechain/ethers-v5": "^7.2.0",
+		"@types/node": "^18.14.2",
+		"crypto": "^1.0.1",
+		"defender-autotask-client": "^1.39.0",
+		"defender-relay-client": "^1.39.0",
+		"dotenv": "^10.0.0",
+		"elliptic": "^6.5.4",
+		"eslint-plugin-prettier": "^4.0.0",
+		"ethers": "^5.6.2",
+		"hardhat-preprocessor": "^0.1.5",
+		"prettier": "^2.5.1",
+		"prettier-plugin-solidity": "^1.0.0-beta.13",
+		"solhint": "^3.3.6",
+		"solidity-coverage": "^0.7.17",
+		"ts-loader": "^9.4.2",
+		"typechain": "^5.2.0",
+		"webpack": "^5.75.0",
+		"webpack-cli": "^4.9.2"
+	},
+	"dependencies": {
+		"@openzeppelin/contracts": "^4.5.0",
+		"@openzeppelin/contracts-upgradeable": "^4.8.0",
+		"solc": "0.8.19",
+		"ts-node": "^10.8.0",
+		"typescript": "^4.8.4",
+		"web3-utils": "^1.7.1"
+	},
+	"scripts": {
+		"test": "func () forge test $(if [ $1 != '' ]; then echo '--match-test' $1  ; fi) $(if [ $2 != '' ]; then echo '-vvvv'; else '-vvv'  ; fi); func  ",
+		"gas": "yarn test --gas-report  ",
+		"relay": "yarn ts-node services/oz-defender/autotasks/scripts/test/relay-user-op.ts",
+		"deploy": "func () forge script script/deploy/$1.s.sol:$1 --rpc-url $(grep $2'_RPC_URL' .env | cut -d '=' -f2) --chain-id $(grep $2'_CHAIN_ID' .env | cut -d '=' -f2)  --private-key $(grep $2'_PRIVATE_KEY' .env | cut -d '=' -f2) --etherscan-api-key  $(grep $2'_EXPLORER_API_KEY' .env | cut -d '=' -f2) $(if [ $3 = 'b' ]; then echo '--verify --broadcast --legacy'; fi); func"
+	}
+}
