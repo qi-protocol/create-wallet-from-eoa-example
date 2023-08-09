@@ -38,7 +38,9 @@ contract SimpleAccountSetup is Script {
         signature: new bytes(0)
     });
 
-    function setUp() public {
+    function setUp() public {}
+
+    function run() public {
         string memory key = vm.readFile(".secret");
         bytes32 key_bytes = vm.parseBytes32(key);
         uint256 privateKey;
@@ -46,9 +48,7 @@ contract SimpleAccountSetup is Script {
             privateKey := key_bytes
         }
         eoaAddress = vm.addr(privateKey);
-    }
-
-    function run() public {
+        
         vm.startBroadcast(privateKey);
         
         simpleAccountFactory = new SimpleAccountFactory(entryPoint);
