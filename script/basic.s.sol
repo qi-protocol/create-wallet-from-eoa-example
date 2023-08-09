@@ -6,6 +6,8 @@ import {SimpleAccount, SimpleAccountFactory, UserOperation, IEntryPoint} from "@
 import "account-abstraction/interfaces/IEntryPoint.sol";
 
 contract SimpleAccountSetup is Script {
+    address internal eoaAddress;
+
     // Entry point
     address internal entryPointAddress = 0x0576a174D229E3cFA37253523E645A78A0C91B57;
     IEntryPoint public entryPoint = IEntryPoint(entryPoint);

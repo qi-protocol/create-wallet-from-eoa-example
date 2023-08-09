@@ -3,12 +3,18 @@
 clone this repo via
 
 ```
-git clone --recurse-submodules -f https://github.com/qi-protocol/create-wallet-sample
+git clone --recurse-submodules https://github.com/qi-protocol/create-wallet-sample
 ```
 
 build the repo
 ```
+yarn install
 forge build
+```
+
+change private key
+```
+mv .secret.example .secret
 ```
 
 run test
