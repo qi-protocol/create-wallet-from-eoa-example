@@ -1,5 +1,6 @@
 pragma solidity ^0.8.15;
 
+import "forge-std/Vm.sol";
 import "forge-std/Script.sol";
 import {SimpleAccount, SimpleAccountFactory, UserOperation, IEntryPoint} from "@erc4337/samples/SimpleAccountFactory.sol";
 import "account-abstraction/interfaces/IEntryPoint.sol";
@@ -14,18 +15,23 @@ contract SimpleAccountSetup is Script {
     SimpleAccount public simpleAccount;
     address internal simpleAccountAddress;
 
-    bytes32 internal constant SALT = "0x55";
+    uint256 internal constant SALT = 0x55;
 
     function setUp() public {}
 
     function run() public {
         string memory key = vm.readFile(".secret");
-        uint256 privateKey = vm.addr(vm.parseBytes32(key));
-        address eoaAddress = address(vm.publicKey());
+        bytes32 key_bytes = vm.parseBytes32(key);
+        uint256 privateKey;
+        assembly {
+            privateKey := key_bytes
+        }
+        address eoaAddress = vm.addr(privateKey);
 
         // deploy and initialized, base account and factory
         simpleAccountFactory = new SimpleAccountFactory(IEntryPoint(entryPoint));
-        simpleAccountAddress = simpleAccountFactory.createAccount(eoaAddress, SALT);
+        simpleAccount = simpleAccountFactory.createAccount(eoaAddress, SALT);
+        simpleAccountAddress = address(simpleAccount);
 
         
         // deploy wallet account
