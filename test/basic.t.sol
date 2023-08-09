@@ -1,21 +1,24 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.15;
 
-//import {Vm as vm} from "forge-std/Vm.sol";
+import {Vm as vm} from "forge-std/Vm.sol";
 import "forge-std/Test.sol";
-import {StdCheats} from "forge-std/StdCheats.sol";
-import {StdAssertions} from "forge-std/StdAssertions.sol";
+import "forge-std/StdCheats.sol";
+import "forge-std/console.sol";
 
-import {EntryPoint} from "@erc4337/core/EntryPoint.sol";
+import {EntryPoint, IEntryPoint} from "@erc4337/core/EntryPoint.sol";
 import {SimpleAccount, SimpleAccountFactory, UserOperation} from "@erc4337/samples/SimpleAccountFactory.sol";
 
-contract basicTest is StdCheats, StdAssertions {
+contract basicTest is Test {
+    address internal eoaAddress;
+
     // Entry point
     EntryPoint public entryPoint;
     address internal entryPointAddress;
 
     // Factory for individual 4337 accounts
     SimpleAccountFactory public simpleAccountFactory;
+    address internal simpleAccountFactoryAddress;
 
     SimpleAccount public simpleAccount;
     address internal simpleAccountAddress;
@@ -46,11 +49,21 @@ contract basicTest is StdCheats, StdAssertions {
         assembly {
             privateKey := key_bytes
         }
-        address eoaAddress = vm.addr(privateKey);
-        //vm.logBytes32(eoaAddress);
+        eoaAddress = vm.addr(privateKey);
         entryPoint = new EntryPoint();
         entryPointAddress = address(entryPoint);
-        simpleAccountFactory = new SimpleAccountFactory(entryPointAddress);
-        simpleAccountFactory.createAccount(eoaAddress, SALT);
+        simpleAccountFactory = new SimpleAccountFactory(IEntryPoint(entryPointAddress));
+        simpleAccountFactoryAddress = address(simpleAccountFactory);
+        simpleAccount = simpleAccountFactory.createAccount(eoaAddress, SALT);
+        simpleAccountAddress = address(simpleAccount);
+    }
+
+    function testCreate() public {
+        console.log("All local EVM:");
+        console.log("EOA: ", eoaAddress);
+        console.log("EntryPoint: ", entryPointAddress);
+        console.log("Simple Factory: ", simpleAccountFactoryAddress);
+        console.log("SALT: ", SALT);
+        console.log("Simple Account: ", simpleAccountAddress);
     }
 }

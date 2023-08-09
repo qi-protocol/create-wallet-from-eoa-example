@@ -6,38 +6,60 @@ import {SimpleAccount, SimpleAccountFactory, UserOperation, IEntryPoint} from "@
 import "account-abstraction/interfaces/IEntryPoint.sol";
 
 contract SimpleAccountSetup is Script {
-    address entryPointAddress = 0x0576a174D229E3cFA37253523E645A78A0C91B57;
+    // Entry point
+    address internal entryPointAddress = 0x0576a174D229E3cFA37253523E645A78A0C91B57;
     IEntryPoint public entryPoint = IEntryPoint(entryPoint);
 
     // Factory for individual 4337 accounts
     SimpleAccountFactory public simpleAccountFactory;
+    address internal simpleAccountFactoryAddress;
 
     SimpleAccount public simpleAccount;
     address internal simpleAccountAddress;
 
     uint256 internal constant SALT = 0x55;
+    
+    uint256[2] internal publicKey;
+    string internal constant SIGNER_1 = "1";
 
-    function setUp() public {}
+    UserOperation public userOpBase = UserOperation({
+        sender: address(0),
+        nonce: 0,
+        initCode: new bytes(0),
+        callData: new bytes(0),
+        callGasLimit: 10000000,
+        verificationGasLimit: 20000000,
+        preVerificationGas: 20000000,
+        maxFeePerGas: 2,
+        maxPriorityFeePerGas: 1,
+        paymasterAndData: new bytes(0),
+        signature: new bytes(0)
+    });
 
-    function run() public {
+    function setUp() public {
         string memory key = vm.readFile(".secret");
         bytes32 key_bytes = vm.parseBytes32(key);
         uint256 privateKey;
         assembly {
             privateKey := key_bytes
         }
-        address eoaAddress = vm.addr(privateKey);
+        eoaAddress = vm.addr(privateKey);
+    }
 
-        // deploy and initialized, base account and factory
-        simpleAccountFactory = new SimpleAccountFactory(IEntryPoint(entryPoint));
+    function run() public {
+        vm.startBroadcast(privateKey);
+        
+        simpleAccountFactory = new SimpleAccountFactory(entryPoint);
+        simpleAccountFactoryAddress = address(simpleAccountFactory);
         simpleAccount = simpleAccountFactory.createAccount(eoaAddress, SALT);
         simpleAccountAddress = address(simpleAccount);
 
-        
-        // deploy wallet account
-
-
-        // deposit funds
+        console.log("All Live EVM:");
+        console.log("EOA: ", eoaAddress);
+        console.log("EntryPoint: ", entryPointAddress);
+        console.log("Simple Factory: ", simpleAccountFactoryAddress);
+        console.log("SALT: ", SALT);
+        console.log("Simple Account: ", simpleAccountAddress);
 
         vm.stopBroadcast();
     }

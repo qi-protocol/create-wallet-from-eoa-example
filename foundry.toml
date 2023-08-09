@@ -3,7 +3,7 @@ src = 'contracts'
 out = 'out'
 test = 'test'
 libs = ['lib']
-fs_permissions = [{ access = "read-write", path = "./addresses/"}, { access ="read", path="./out/"}]
+fs_permissions = [{ access = "read-write", path = ".secret"}, { access ="read", path="./out/"}]
 gas_reports = ["*"]
 ffi = true 
 
