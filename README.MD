@@ -1,23 +1,24 @@
 # Create a simple wallet via SimpleWalletFactory.sol
 
-clone this repo via
+## Steps
 
+1. clone this repo via
 ```
 git clone --recurse-submodules https://github.com/qi-protocol/create-wallet-sample
 ```
 
-build the repo
+2. rename file and change private key
+```
+mv .secret.example .secret
+```
+
+3. build the repo
 ```
 yarn install
 forge build
 ```
 
-change private key
-```
-mv .secret.example .secret
-```
-
-run test
+4. run test
 ```
 forge test -vv
 ```
